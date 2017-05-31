@@ -9,4 +9,5 @@ router = routers.DefaultRouter()
 urlpatterns = [
     url(r'^', include(router.urls)),
     url(r'^', include('name.urls')),
+    url(r'^', include('move.urls')),
 ]

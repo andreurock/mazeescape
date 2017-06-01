@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from move.models import Wall
 from move.serializers import WallSerializer
 from django.http import HttpResponse
-from move.astar import AStar
+from move.move import CalculateMove
 
 class Move(APIView):
     def post(self, request, format=None):
@@ -13,9 +13,6 @@ class Move(APIView):
 
         if serializer.is_valid():
             serializer.save()
-            # stored_walls = Wall.objects.all()
-            # serializer = WallSerializer(stored_walls, many=True)
-            # return Response(serializer.data, status=status.HTTP_201_CREATED)
 
         stored_walls = Wall.objects.all()
         serializer = WallSerializer(stored_walls, many=True)
@@ -27,15 +24,11 @@ class Move(APIView):
         start = (position['x'], position['y'])
         goal = request.data['maze']['goal']
         end = (goal['x'], goal['y'])
-
         walls = []
+
         for wall in wallsDictList:
             walls.append((wall['x'], wall['y']))
 
-        aStar = AStar()
-        aStar.init_grid(width, height, walls, start, end)
-        path = aStar.solve()
+        move = CalculateMove(width, height, walls, start, end)
 
-        return HttpResponse(str(path))
-
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response({'move' : move.nextMove()})

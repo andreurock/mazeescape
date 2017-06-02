@@ -1,33 +1,33 @@
-from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from move.models import Wall, Game
 from move.serializers import WallSerializer, GameSerializer
-from django.http import HttpResponse
 from move.move import CalculateMove
+
 
 class Move(APIView):
     def post(self, request, format=None):
-        walls = WallSerializer.remove_duplicates(request.data['maze']['walls'])
-        serializer = WallSerializer(data=walls, many=True)
-
         stored_game = Game.objects.all().last()
 
-        return HttpResponse(str(stored_game.gameId))
-
-
-        if stored_game != request.data['player']['id']:
+        # Clean maze if we start a new game
+        if stored_game.gameId != request.data['player']['id']:
             Wall.objects.all().delete()
-            gameSerializer = GameSerializer(stored_game, data=request.data['player']['id'])
-            if gameSerializer.is_valid():
-                gameSerializer.save()
+            game_serializer = GameSerializer(stored_game, data={'gameId': request.data['player']['id']}, partial=True)
+
+            if game_serializer.is_valid():
+                game_serializer.save()
+
+        # Add new parts of the maze discovered
+        walls = WallSerializer.remove_duplicates(request.data['maze']['walls'])
+        serializer = WallSerializer(data=walls, many=True)
 
         if serializer.is_valid():
             serializer.save()
 
+        # Get maze information and calculate next move
         stored_walls = Wall.objects.all()
         serializer = WallSerializer(stored_walls, many=True)
-        wallsDictList = serializer.data
+        walls_dict_list = serializer.data
 
         height = request.data['maze']['size']['height']
         width = request.data['maze']['size']['width']
@@ -37,17 +37,9 @@ class Move(APIView):
         end = (goal['x'], goal['y'])
         walls = []
 
-        for wall in wallsDictList:
+        for wall in walls_dict_list:
             walls.append((wall['x'], wall['y']))
 
         move = CalculateMove(width, height, walls, start, end)
 
-        stored_walls = Wall.objects.all()
-        serializer = WallSerializer(stored_walls, many=True)
-
-        games = Game.objects.all()
-        serializer = GameSerializer(games, many=True)
-
-        return HttpResponse(str(serializer.data))
-
-        return Response({'move' : move.nextMove()})
+        return Response({'move': move.nextMove()})

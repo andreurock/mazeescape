@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from move.models import Wall, Game
 
+
 class WallSerializer(serializers.ModelSerializer):
     class Meta:
         model = Wall
@@ -20,7 +21,8 @@ class WallSerializer(serializers.ModelSerializer):
 
         return walls
 
+
 class GameSerializer(serializers.ModelSerializer):
     class Meta:
         model = Game
-        fields = ('gameId')
+        fields = ('gameId',)

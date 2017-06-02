@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from move.models import Wall, Game
 from move.serializers import WallSerializer, GameSerializer
 from move.move import CalculateMove
-
+from django.http import HttpResponse
 
 class Move(APIView):
     def post(self, request, format=None):

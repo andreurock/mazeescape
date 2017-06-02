@@ -1,0 +1,9 @@
+[
+  {
+    "model": "move.Game",
+    "pk": 1,
+    "fields": {
+      "gameId": 0
+    }
+  }
+]

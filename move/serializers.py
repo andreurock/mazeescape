@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from move.models import Wall
+from move.models import Wall, Game
 
 class WallSerializer(serializers.ModelSerializer):
     class Meta:
@@ -19,3 +19,8 @@ class WallSerializer(serializers.ModelSerializer):
                 i += 1
 
         return walls
+
+class GameSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Game
+        fields = ('gameId')

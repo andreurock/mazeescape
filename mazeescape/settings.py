@@ -25,7 +25,7 @@ SECRET_KEY = '4)nt7*$8=e6xm4yav4f^6#4hylx99vfl*vtubeu9if057)#cpd'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', 'http://andreurock.pythonanywhere.com']
+ALLOWED_HOSTS = ['localhost', 'andreurock.pythonanywhere.com']
 
 
 # Application definition

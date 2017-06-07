@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from move.models import Wall, Game
 from move.serializers import WallSerializer, GameSerializer
 from move.move import CalculateMove
-from django.http import HttpResponse
+
 
 class Move(APIView):
     def post(self, request, format=None):
@@ -39,6 +39,13 @@ class Move(APIView):
 
         for wall in walls_dict_list:
             walls.append((wall['x'], wall['y']))
+
+        # Add ghosts next positions as walls
+        for ghost in request.data['ghosts']:
+            walls.append((ghost['x'] + 1, ghost['y']))
+            walls.append((ghost['x'] - 1, ghost['y']))
+            walls.append((ghost['x'], ghost['y'] + 1))
+            walls.append((ghost['x'], ghost['y'] - 1))
 
         move = CalculateMove(width, height, walls, start, end)
 

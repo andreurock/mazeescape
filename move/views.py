@@ -37,16 +37,29 @@ class Move(APIView):
         end = (goal['x'], goal['y'])
         walls = []
 
+        possible_moves = [{'x': position['x'] + 1, 'y': position['y']}, {'x': position['x'] - 1, 'y': position['y']},
+                          {'x': position['x'], 'y': position['y'] + 1}, {'x': position['x'] + 1, 'y': position['y'] - 1}]
+
         for wall in walls_dict_list:
             walls.append((wall['x'], wall['y']))
 
         # Add ghosts next positions as walls
         for ghost in request.data['ghosts']:
-            walls.append((ghost['x'], ghost['y']))
-            walls.append((ghost['x'] + 1, ghost['y']))
-            walls.append((ghost['x'] - 1, ghost['y']))
-            walls.append((ghost['x'], ghost['y'] + 1))
-            walls.append((ghost['x'], ghost['y'] - 1))
+            for possible_move in possible_moves:
+                if possible_move['x'] == ghost['x'] and possible_move['y'] == ghost['y']:
+                    walls.append((ghost['x'], ghost['y']))
+
+                if possible_move['x'] == (ghost['x'] + 1) and possible_move['y'] == ghost['y']:
+                    walls.append((ghost['x'] + 1, ghost['y']))
+
+                if possible_move['x'] == (ghost['x'] - 1) and possible_move['y'] == ghost['y']:
+                    walls.append((ghost['x'] - 1, ghost['y']))
+
+                if possible_move['x'] == ghost['x'] and possible_move['y'] == (ghost['y'] + 1):
+                    walls.append((ghost['x'], ghost['y'] + 1))
+
+                if possible_move['x'] == ghost['x'] and possible_move['y'] == (ghost['y'] - 1):
+                    walls.append((ghost['x'], ghost['y'] - 1))
 
         move = CalculateMove(width, height, walls, start, end)
 

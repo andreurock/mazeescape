@@ -42,6 +42,7 @@ class Move(APIView):
 
         # Add ghosts next positions as walls
         for ghost in request.data['ghosts']:
+            walls.append((ghost['x'], ghost['y']))
             walls.append((ghost['x'] + 1, ghost['y']))
             walls.append((ghost['x'] - 1, ghost['y']))
             walls.append((ghost['x'], ghost['y'] + 1))
